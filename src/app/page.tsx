@@ -1,101 +1,136 @@
+"use client";
+import { useState } from "react";
+import FormInput from "@/components/FormInput";
 import Image from "next/image";
+import { log } from "console";
 
-export default function Home() {
+const Home = () => {
+  // Declare useState
+  const [count, setCount] = useState<number>(0); // return [value, (value) => {array[0] = value}]
+  // count = array[0], setCount = array[1]
+
+  const [inputValue, setInputValue] = useState<string>("");
+
+  // state for data-form
+  const [name, setName] = useState<string>("");
+  const [age, setAge] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+
+  // store data
+  const [data, setData] = useState<any>([]);
+
+  const onIncrement = () => {
+    setCount(count + 1); // Memperbarui data pada state "count" melalui fungsi setCount
+  };
+
+  const onHandleInput = (e: any) => {
+    // console.log(e.target.value);
+    setInputValue(e.target.value);
+  };
+
+  // set value to state for data-form element
+  const onHandleAge = (e: any) => {
+    setAge(e.target.value);
+  };
+  const onHandleEmail = (e: any) => {
+    setEmail(e.target.value);
+  };
+
+  const onSave = () => {
+    // Cara 1
+    // const temp = [...data];
+    // temp.push({ name, age, email });
+    // setData(temp);
+
+    // Cara 2
+    setData([...data, { name, age, email }]);
+  };
+
+  const printData = () => {
+    return data.map((val: any, index: number) => {
+      // use map function to create a new table row element
+      return (
+        <tr key={`${val}-${index}`} className="border border-collapse">
+          <td className="text-center border-collapse">{index + 1}</td>
+          <td className="text-center border-collapse">{val.name}</td>
+          <td className="text-center border-collapse">{val.age}</td>
+          <td className="text-center border-collapse">{val.email}</td>
+          <td className="text-center border-collapse">
+            <button type="button" className="bg-slate-300 p-2 rounded-md">
+              Edit
+            </button>
+            <button type="button" className="bg-red-500 p-2 rounded-md">
+              Delete
+            </button>
+          </td>
+        </tr>
+      );
+    });
+  };
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
+    <div className="w-1/2 m-auto">
+      <h1 className="text-3xl text-center uppercase">Data Management</h1>
+      <div className="hidden">
+        {/* Display data from state */}
+        <h1 className="text-9xl">{count}</h1>
+        <button
+          type="button"
+          className="bg-gray-300 p-2 rounded-md shadow-md"
+          onClick={onIncrement}
+        >
+          Increment
+        </button>
+        <input
+          type="text"
+          placeholder="Type something"
+          className="p-2 border"
+          onChange={onHandleInput}
         />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+        <span>{inputValue}</span>
+      </div>
+      <div id="data-form" className="flex flex-col gap-3">
+        <FormInput
+          onChange={(e: any) => {
+            setName(e.target.value);
+          }}
+          type="text"
+          label="Full Name"
+          placeholder="Type your name"
+        />
+        <FormInput
+          onChange={onHandleAge}
+          type="number"
+          label="Age"
+          placeholder="Type your age"
+        />
+        <FormInput
+          onChange={onHandleEmail}
+          type="email"
+          label="Email"
+          placeholder="Type your email"
+        />
+        <button
+          type="button"
+          className="bg-slate-300 p-2 rounded-md shadow-md"
+          onClick={onSave}
         >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+          Save
+        </button>
+      </div>
+      <table className="w-full border border-collapse mt-5">
+        <thead>
+          <tr>
+            <th className="border border-collapse">No</th>
+            <th className="border border-collapse">Name</th>
+            <th className="border border-collapse">Age</th>
+            <th className="border border-collapse">Email</th>
+            <th className="border border-collapse">Action</th>
+          </tr>
+        </thead>
+        <tbody>{printData()}</tbody>
+      </table>
     </div>
   );
-}
+};
+export default Home;
