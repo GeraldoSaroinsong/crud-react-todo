@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import FormInput from "@/components/FormInput";
+import { FaSearch } from "react-icons/fa";
+import { FaTrashAlt } from "react-icons/fa";
 
 const Todo = () => {
   // store task
@@ -10,6 +12,8 @@ const Todo = () => {
   const [data, setData] = useState<any>([]);
   // store checkbox status
   const [doneCount, setDoneCount] = useState<number>(0);
+
+  const [searchItem, setSearchItem] = useState<string>("");
 
   // save task function
   const saveTask = () => {
@@ -39,7 +43,10 @@ const Todo = () => {
 
   // print task data
   const printData = () => {
-    return data.map((val: any, index: number) => {
+    const newData = data.filter(
+      (val: any) => val.task.includes(searchItem) === true
+    );
+    return newData.map((val: any, index: number) => {
       return (
         <tr key={`${val}-${index}`}>
           <td className="text-center">
@@ -53,10 +60,10 @@ const Todo = () => {
           <td>
             <button
               type="button"
-              className="p-2 bg-red-500 rounded-md shadow-md"
+              className="p-2 bg-red-400 rounded-md shadow-md"
               onClick={() => deleteTask(index)}
             >
-              Delete
+              <FaTrashAlt />
             </button>
           </td>
         </tr>
@@ -67,7 +74,18 @@ const Todo = () => {
   return (
     <div className="w-1/2 m-auto">
       <h1 className="text-center font-bold text-3xl">To Do List</h1>
-      <table className="w-full divide-y divide-gray-200">{printData()}</table>
+      <div>
+        <FormInput
+          type="search"
+          placeholder="Search Task"
+          onChange={(e: any) => {
+            setSearchItem(e.target.value);
+          }}
+        />
+      </div>
+      <table className="w-full divide-y divide-gray-200">
+        <tbody>{printData()}</tbody>
+      </table>
       <h2 className="text-center font-semibold text-2xl">Done : {doneCount}</h2>
       <FormInput
         onChange={(e: any) => {
